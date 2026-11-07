@@ -737,6 +737,28 @@ body.on-home .home-promo{display:block}
 .sa-pos li b{font-weight:600}.sa-pos li em{font-style:normal;font-variant-numeric:tabular-nums}
 .sa-tot{display:flex;justify-content:space-between;max-width:560px;padding:16px 2px 0;font-size:1.15rem}
 .sa-tot b{font-weight:700}
+.rg-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+@media (max-width:640px){.rg-grid{grid-template-columns:1fr}}
+.rg-card{background:var(--plate);border:1px solid var(--rule);border-left:3px solid var(--ice);padding:20px 22px;display:grid;gap:10px;align-content:start;text-decoration:none;color:var(--ink)}
+.rg-card h4{margin:0;font-family:var(--serif-en);font-weight:500;font-size:1.3rem}
+.rg-card p{margin:0;color:var(--muted);line-height:1.7}
+.rg-card .prog-dlbtn{justify-self:start;margin-top:6px}
+.rg-wide{grid-column:1/-1}
+.rg-sports{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));column-gap:28px;border-top:1px solid var(--rule)}
+.rg-sports li{display:flex;justify-content:space-between;gap:12px;padding:10px 2px;border-bottom:1px solid var(--rule)}
+.rg-sports em{font-style:normal;font-variant-numeric:tabular-nums}
+.rg-card .rg-tot{display:flex;justify-content:space-between;color:var(--ink);font-size:1.05rem;max-width:none}
+.rg-tri{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(8px,2vw,16px)}
+.rg-tall{justify-items:center;text-align:center;align-content:space-between;gap:14px;padding:clamp(16px,3vw,28px) clamp(8px,2vw,18px);min-height:230px;border-left-width:1px;border-top:3px solid var(--ice)}
+.rg-tall h4{font-size:clamp(.95rem,2.4vw,1.25rem)}
+.rg-tall .prog-dlbtn{justify-self:center;padding:10px clamp(10px,2.4vw,22px);font-size:clamp(.72rem,2vw,1.05rem);margin-top:0;white-space:nowrap}
+.rg-tall .prog-dlbtn svg{display:none}
+.rg-ic svg{width:clamp(30px,6vw,44px);height:clamp(30px,6vw,44px);fill:none;stroke:var(--ice);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.rg-open{grid-template-columns:1fr auto;align-items:center;transition:border-color .2s}
+.rg-open:hover{border-color:var(--ice)}
+.rg-go svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.sec>.pd-back{justify-self:start}
+.rg-none{text-align:center;color:var(--muted);padding:40px 16px}
 /* ---- motion extras ---- */
 .readbar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--ice);transform-origin:0 50%;transform:scaleX(0);pointer-events:none;z-index:2}
 .rv-on .rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--rvd,0s)}
@@ -1193,44 +1215,36 @@ setTimeout(function(){el.classList.add('si-out');document.documentElement.classL
 <!-- ADMISSIONS -->
 <section class="page" data-page="admissions" hidden>
   <div class="sec">
-    <h3>Register <span class="sc">สมัครเรียน</span></h3>
-    <div class="empty"><b>Coming Soon</b><span>แบบฟอร์มสมัครจะเปิดเร็ว ๆ นี้</span></div>
+    <h3>1. แบบฟอร์มตัวละคร</h3>
+    <div class="rg-grid"><div class="rg-card"><h4>นักเรียน</h4><a class="prog-dlbtn" href="#" data-soon>เปิดแบบฟอร์ม<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></a></div><div class="rg-card"><h4>บุคคลทั่วไป</h4><a class="prog-dlbtn" href="#" data-soon>เปิดแบบฟอร์ม<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></a></div></div>
   </div>
 
   <div class="sec">
-    <h3>Places Available <span class="sc">จำนวนที่นั่ง</span></h3>
-    <div class="tbl"><table>
-      <thead><tr><th>แผนการเรียน</th><th class="num">Year 11</th><th class="num">Year 12</th><th class="num">Year 13</th></tr></thead>
-      <tbody>
-        <tr><td>Science &amp; Mathematics</td><td class="num">20</td><td class="num">20</td><td class="num">20</td></tr>
-        <tr><td>Business &amp; Humanities</td><td class="num">15</td><td class="num">15</td><td class="num">15</td></tr>
-        <tr><td>Art &amp; Design</td><td class="num">15</td><td class="num">15</td><td class="num">15</td></tr>
-        <tr><td>Music &amp; Performing Arts</td><td class="num">15</td><td class="num">15</td><td class="num">15</td></tr>
-        <tr><td>Languages &amp; Literature</td><td class="num">15</td><td class="num">15</td><td class="num">15</td></tr>
-        <tr><td>Sport &amp; Exercise Science</td><td class="num">15</td><td class="num">15</td><td class="num">15</td></tr>
-      </tbody>
-      <tfoot><tr><td>รวมทั้งหมด</td><td class="num">95</td><td class="num">95</td><td class="num">95</td></tr>
-      <tr><td colspan="4" style="text-align:right;border-top:0;padding-top:0">ทั้งโรงเรียน 285 ที่นั่ง</td></tr></tfoot>
-    </table></div>
-  </div>
-
-  <div class="sec">
-    <h3>Tuition Fees <span class="sc">ค่าเล่าเรียน</span></h3>
-    <div class="tbl"><table>
-      <thead><tr><th>แผนการเรียน</th><th class="num">Year 11</th><th class="num">Year 12</th><th class="num">Year 13</th></tr></thead>
-      <tbody>
-        <tr><td>Science &amp; Mathematics</td><td class="num tba">TBA</td><td class="num tba">TBA</td><td class="num tba">TBA</td></tr>
-        <tr><td>Business &amp; Humanities</td><td class="num tba">TBA</td><td class="num tba">TBA</td><td class="num tba">TBA</td></tr>
-        <tr><td>Art &amp; Design</td><td class="num tba">TBA</td><td class="num tba">TBA</td><td class="num tba">TBA</td></tr>
-        <tr><td>Music &amp; Performing Arts</td><td class="num tba">TBA</td><td class="num tba">TBA</td><td class="num tba">TBA</td></tr>
-        <tr><td>Languages &amp; Literature</td><td class="num tba">TBA</td><td class="num tba">TBA</td><td class="num tba">TBA</td></tr>
-        <tr><td>Sport &amp; Exercise Science</td><td class="num tba">TBA</td><td class="num tba">TBA</td><td class="num tba">TBA</td></tr>
-      </tbody>
-    </table></div>
-    <div class="notice">
-      <p><b>Application Fee</b> (Non-refundable) : <span class="tba">TBA</span></p>
-      <p><b>Admission Fee</b> (Non-refundable) : <span class="tba">TBA</span></p>
+    <h3>2. ลงทะเบียน</h3>
+    <div class="rg-grid">
+      <div class="rg-card rg-wide"><h4>นักกีฬาโรงเรียน</h4><ul class="rg-sports"><li><span><b>Football</b> ฟุตบอล</span><em>14 คน</em></li><li><span><b>Basketball</b> บาสเกตบอล</span><em>10 คน</em></li><li><span><b>Ice Hockey</b> ไอซ์ฮอกกี้</span><em>12 คน</em></li><li><span><b>Volleyball</b> วอลเลย์บอล</span><em>10 คน</em></li><li><span><b>Polo</b> โปโล</span><em>8 คน</em></li><li><span><b>Tennis</b> เทนนิส</span><em>6 คน</em></li><li><span><b>Badminton</b> แบดมินตัน</span><em>6 คน</em></li><li><span><b>Swimming</b> ว่ายน้ำ</span><em>5 คน</em></li><li><span><b>Athletics</b> กรีฑา</span><em>5 คน</em></li><li><span><b>Judo</b> ยูโด</span><em>6 คน</em></li><li><span><b>Fencing</b> ฟันดาบ</span><em>6 คน</em></li></ul><p class="rg-tot"><span>รวมที่เปิดรับทั้งหมด</span><b>88 คน</b></p><a class="prog-dlbtn" href="#" data-soon>ลงทะเบียน<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></a></div>
+      <div class="rg-card"><h4>นักเรียนทั่วไป</h4><p>เปิดรับไม่จำกัดจำนวน</p><a class="prog-dlbtn" href="#" data-soon>ลงทะเบียน<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></a></div>
+      <div class="rg-card"><h4>บุคคลทั่วไป</h4><p>เปิดรับไม่จำกัดจำนวน</p><p>ไม่อนุญาตให้ลงบุคลากรในโรงเรียนทุกตำแหน่ง</p><a class="prog-dlbtn" href="#" data-soon>ลงทะเบียน<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></a></div>
     </div>
+    <div class="rg-tri"><div class="rg-card rg-tall"><span class="rg-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg></span><h4>ตรวจสถานะตัวละคร</h4><a class="prog-dlbtn" href="#" data-soon>ตรวจสถานะ</a></div><div class="rg-card rg-tall"><span class="rg-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M13.5 6.5l4 4"/></svg></span><h4>แก้ไขตัวละคร</h4><a class="prog-dlbtn" href="#" data-soon>แก้ไข</a></div><div class="rg-card rg-tall"><span class="rg-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6l7-3z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg></span><h4>ยืนยันตัวละคร</h4><a class="prog-dlbtn" href="#" data-soon>ยืนยัน</a></div></div>
+  </div>
+
+  <div class="sec">
+    <h3>3. ทะเบียนตัวละคร</h3>
+    <div class="rg-grid">
+      <a class="rg-card rg-open" href="#roster"><h4>ตรวจสอบรายชื่อ</h4><span class="rg-go"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></span></a>
+      <div class="rg-card"><h4>แจ้งถอน</h4><a class="prog-dlbtn" href="#" data-soon>แจ้งถอน<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h17M14 6l6 6-6 6"/></svg></a></div>
+    </div>
+  </div>
+</section>
+<section class="page" data-page="roster" hidden>
+  <div class="sec">
+    <a class="pd-back" href="#admissions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12H4M10 6l-6 6 6 6"/></svg>ลงทะเบียน</a>
+    <h3>ทะเบียนนักเรียน</h3>
+    <div class="tbl"><table>
+      <thead><tr><th>เลขประจำตัว</th><th>ชื่อ-นามสกุล</th><th>ชั้นปี</th><th>ห้อง</th><th>สถานะ</th></tr></thead>
+      <tbody><tr><td colspan="5" class="rg-none">ยังไม่มีรายชื่อ</td></tr></tbody>
+    </table></div>
   </div>
 </section>
 
@@ -1514,7 +1528,7 @@ function show(id){
   document.body.classList.toggle('on-home',id==='home');
   document.body.classList.toggle('on-about',id==='about');
   document.body.classList.toggle('on-school-rules',id==='school-rules');
-  links.forEach(a=>{const on=a.getAttribute('href')==='#'+(id.startsWith('program-')?'programs':id);if(on){a.setAttribute('aria-current','page');}else a.removeAttribute('aria-current')});
+  links.forEach(a=>{const on=a.getAttribute('href')==='#'+(id.startsWith('program-')?'programs':id==='roster'?'admissions':id);if(on){a.setAttribute('aria-current','page');}else a.removeAttribute('aria-current')});
 }
 addEventListener('hashchange',()=>{show(location.hash.slice(1));const m=document.querySelector('main');const top=m.getBoundingClientRect().top+scrollY-navEl.offsetHeight;if(scrollY>top)scrollTo({top})});
 show(location.hash.slice(1)||'home');
