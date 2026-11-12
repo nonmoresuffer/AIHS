@@ -966,6 +966,7 @@ html,body{touch-action:pan-x pan-y}
 .rs-acc{display:inline-flex;opacity:.55;transition:opacity .2s}.rs-acc:hover{opacity:1}
 .rs-acc svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .rs-na{opacity:.35}.rs-at{font-size:.88rem;opacity:.75}
+.rs-lang{display:flex;gap:2px;float:right;margin-top:2px}.rs-lang button{font:inherit;font-size:.78rem;color:var(--muted);background:none;border:1px solid var(--rule);border-radius:999px;padding:4px 11px;cursor:pointer}.rs-lang button[aria-pressed=true]{color:var(--ink);background:color-mix(in srgb,var(--ice) 16%,transparent)}
 /* ---- motion extras ---- */
 .readbar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--ice);transform-origin:0 50%;transform:scaleX(0);pointer-events:none;z-index:2}
 .rv-on .rv{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1);transition-delay:var(--rvd,0s)}
@@ -1426,9 +1427,9 @@ setTimeout(function(){el.classList.add('si-out');document.documentElement.classL
 <section class="page" data-page="roster" hidden>
   <div class="sec">
     <a class="pd-back" href="#admissions"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12H4M10 6l-6 6 6 6"/></svg>ลงทะเบียน</a>
-    <h3>ทะเบียนนักเรียน</h3>
+    <div class="rs-lang" id="rs-lang"><button type="button" data-l="th" aria-pressed="false">TH</button><button type="button" data-l="en" aria-pressed="true">EN</button></div><h3 id="rs-h">Student Register</h3>
     <div class="rs-mode" id="rs-mode"><button type="button" data-m="all" aria-pressed="true">นักเรียนทั้งหมด</button><button type="button" data-m="ath" aria-pressed="false">นักกีฬา</button></div><div class="rs-chips" id="rs-chips" hidden></div><p class="rs-cnt" id="rs-cnt" hidden></p>
-    <div class="tbl"><table>
+    <div class="tbl"><table id="rs-tbl">
       <thead><tr><th>เลขประจำตัว</th><th>ชื่อ-นามสกุล</th><th>ห้อง</th><th>กีฬา</th><th>ชั้นปี</th><th>แผนการเรียน</th><th>แอคเคาน์</th></tr></thead>
       <tbody><tr><td colspan="7" class="rg-none">ยังไม่มีรายชื่อ</td></tr></tbody>
     </table></div>
@@ -2022,13 +2023,24 @@ function council(rows){if(!rows)return;if(window.AIHS_council)window.AIHS_counci
 function ticker(rows){if(!rows)return;var on=rows.filter(function(r){return String(r.active).toUpperCase()=='TRUE'&&(!r.from||r.from<=today)&&(!r.to||r.to>=today)&&r.text});if(!on.length)return;var tr=document.querySelector('.an-track');if(!tr)return;var items='';for(var k=0;k<4;k++)on.forEach(function(r){items+='<span class="an-item">'+esc(r.text)+'</span>'});tr.innerHTML='<div class="an-group">'+items+'</div><div class="an-group">'+items+'</div>';var rg=document.querySelector('.announce');if(rg)rg.setAttribute('aria-label','ประกาศ: '+on[0].text)}
 function news(rows){if(!rows)return;var on=rows.filter(function(r){return r.status=='published'&&(!r.publish_at||r.publish_at.slice(0,10)<=today)}).sort(function(a,b){return (b.date||'').localeCompare(a.date||'')});if(!on.length)return;var box=document.getElementById('news-all');if(!box)return;var card=function(r){var im=drv(r.image);return '<article class="news-card">'+(im?'<figure class="nc-img"><img loading="lazy" alt="" src="'+esc(im)+'"></figure>':'')+'<div class="nc-body"><span class="nc-meta">'+esc(r.date)+'</span><h4>'+esc(r.title)+'</h4><p>'+esc(r.body)+'</p></div></article>'};box.innerHTML=on.map(card).join('');var hm=document.getElementById('news-home');if(hm)hm.innerHTML=on.slice(0,3).map(card).join('')}
 function cal(rows){if(!rows||!rows.length)return;var pg=document.querySelector('[data-page="calendar"]');var em=pg&&pg.querySelector('.empty');if(!em)return;rows.sort(function(a,b){return a.date.localeCompare(b.date)});em.outerHTML='<div class="tbl"><table style="min-width:0"><thead><tr><th>วันที่</th><th>กิจกรรม</th><th>เวลา</th><th>หมายเหตุ</th></tr></thead><tbody>'+rows.map(function(r){return '<tr><td>'+esc(r.date)+'</td><td>'+esc(r.title)+'</td><td>'+esc(r.time)+'</td><td>'+esc(r.note)+'</td></tr>'}).join('')+'</tbody></table></div>'}
-function roster(rows){if(!rows||!rows.length)return;var pg=document.querySelector('[data-page="roster"]');var tb=pg&&pg.querySelector('tbody');var ch=document.getElementById('rs-chips'),ct=document.getElementById('rs-cnt');if(!tb||!ch)return;var mode='all',cur='ทั้งหมด',names=['ทั้งหมด'];rows.forEach(function(r){if(r.sport&&names.indexOf(r.sport)<0)names.push(r.sport)});
+function roster(rows){var pg=document.querySelector('[data-page="roster"]');var tb=pg&&pg.querySelector('tbody');var ch=document.getElementById('rs-chips'),ct=document.getElementById('rs-cnt');if(!tb||!ch)return;rows=rows||[];var mode='all',cur='',lang=(window.__rsl||'en');window.__rsl=lang;
+ var T={th:{h:'ทะเบียนนักเรียน',th:['เลขประจำตัว','ชื่อ-นามสกุล','ห้อง','กีฬา','ชั้นปี','แผนการเรียน','แอคเคาน์'],all:'นักเรียนทั้งหมด',ath:'นักกีฬา',allSp:'ทั้งหมด',none:'ยังไม่มีรายชื่อ',unit:'คน',aths:'นักกีฬาทุกชนิด',back:'ลงทะเบียน'},en:{h:'Student Register',th:['Student ID','Name','Room','Sport','Year','Programme','Account'],all:'All students',ath:'Athletes',allSp:'All',none:'No students yet',unit:'students',aths:'All sports',back:'Admissions'}};
  var ICO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg>';
- function acc(v){v=(v||'').trim();if(!v)return '<span class="rs-na">–</span>';if(/^https?:\/\//i.test(v))return '<a class="rs-acc" href="'+esc(v)+'" target="_blank" rel="noopener" aria-label="แอคเคาน์">'+ICO+'</a>';return '<span class="rs-at">'+esc(v)+'</span>'}
- var bar=document.getElementById('rs-mode');
- function draw(){var l=rows.filter(function(r){if(mode=='all')return true;return r.sport&&(cur=='ทั้งหมด'||r.sport==cur)});tb.innerHTML=l.length?l.map(function(r){return '<tr><td>'+esc(r.student_id)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.room||'')+'</td><td>'+(r.sport?'<span class="rs-pill">'+esc(r.sport)+'</span>':'')+'</td><td>'+esc(r.year)+'</td><td>'+esc(r.programme||'')+'</td><td>'+acc(r.account)+'</td></tr>'}).join(''):'<tr><td colspan="7" class="rg-none">ยังไม่มีรายชื่อ</td></tr>';ch.hidden=mode!='ath';ct.textContent=(mode=='all'?'นักเรียนทั้งหมด':(cur=='ทั้งหมด'?'นักกีฬาทุกชนิด':cur))+' · '+l.length+' คน';[].forEach.call(ch.children,function(b){b.setAttribute('aria-pressed',b.textContent==cur)});[].forEach.call(bar.children,function(b){b.setAttribute('aria-pressed',b.dataset.m==mode)})}
- [].forEach.call(bar.children,function(b){b.addEventListener('click',function(){mode=b.dataset.m;draw()})});
- ch.innerHTML='';names.forEach(function(n){var b=document.createElement('button');b.type='button';b.textContent=n;b.addEventListener('click',function(){cur=n;draw()});ch.appendChild(b)});ct.hidden=false;draw()}
+ function acc(v){v=(v||'').trim();if(!v)return '<span class="rs-na">–</span>';if(/^https?:\/\//i.test(v))return '<a class="rs-acc" href="'+esc(v)+'" target="_blank" rel="noopener" aria-label="account">'+ICO+'</a>';return '<span class="rs-at">'+esc(v)+'</span>'}
+ function pick(r,k){return (lang=='en'?(r[k+'_en']||r[k]):(r[k+'_th']||r[k]))||''}
+ var bar=document.getElementById('rs-mode'),lg=document.getElementById('rs-lang'),hd=document.getElementById('rs-h'),th=document.querySelectorAll('#rs-tbl thead th'),bk=pg.querySelector('.pd-back');
+ function sp(r){return r.sport?(lang=='en'?(r.sport_en||r.sport):r.sport):''}
+ function draw(){var t=T[lang],names=[],all=t.allSp;rows.forEach(function(r){var n=sp(r);if(n&&names.indexOf(n)<0)names.push(n)});if(!cur||cur=='*')cur='*';
+  var l=rows.filter(function(r){if(mode=='all')return true;return sp(r)&&(cur=='*'||sp(r)==cur)});
+  hd.textContent=t.h;[].forEach.call(th,function(e,i){e.textContent=t.th[i]});bar.children[0].textContent=t.all;bar.children[1].textContent=t.ath;if(bk&&bk.lastChild)bk.lastChild.textContent=t.back;
+  tb.innerHTML=l.length?l.map(function(r){return '<tr><td>'+esc(r.student_id)+'</td><td>'+esc(pick(r,'name'))+'</td><td>'+esc(r.room||'')+'</td><td>'+(sp(r)?'<span class="rs-pill">'+esc(sp(r))+'</span>':'')+'</td><td>'+esc(r.year)+'</td><td>'+esc(pick(r,'programme'))+'</td><td>'+acc(r.account)+'</td></tr>'}).join(''):'<tr><td colspan="7" class="rg-none">'+t.none+'</td></tr>';
+  ch.innerHTML='';[['*',all]].concat(names.map(function(n){return [n,n]})).forEach(function(p){var b=document.createElement('button');b.type='button';b.textContent=p[1];b.setAttribute('aria-pressed',p[0]==cur);b.addEventListener('click',function(){cur=p[0];draw()});ch.appendChild(b)});
+  ch.hidden=mode!='ath';ct.hidden=false;ct.textContent=(mode=='all'?t.all:(cur=='*'?t.aths:cur))+' · '+l.length+' '+t.unit;
+  [].forEach.call(bar.children,function(b){b.setAttribute('aria-pressed',b.dataset.m==mode)});[].forEach.call(lg.children,function(b){b.setAttribute('aria-pressed',b.dataset.l==lang)});document.documentElement.getAttribute('lang')}
+ [].forEach.call(bar.children,function(b){b.onclick=function(){mode=b.dataset.m;draw()}});
+ [].forEach.call(lg.children,function(b){b.onclick=function(){lang=b.dataset.l;window.__rsl=lang;cur='*';draw()}});
+ draw()}
+ window.__rs=roster;
 function drv(u){u=(u||'').trim();var m=u.match(/\/d\/([\w-]{15,})/)||u.match(/[?&]id=([\w-]{15,})/);return m?'https://lh3.googleusercontent.com/d/'+m[1]+'=w1600':u}
 function slots(rows){if(!rows)return;rows.forEach(function(r){var u=drv(r.image_url),k=(r.slot||'').trim();if(!u||!k)return;
  if(k=='uniform_full'){var t=document.getElementById('uf-full-src');if(t)t.textContent=u;return}
@@ -2038,7 +2050,7 @@ function slots(rows){if(!rows)return;rows.forEach(function(r){var u=drv(r.image_
  var m=k.match(/^prog_(\w+)$/);if(m){var h=document.querySelector('[data-page="program-'+m[1]+'"] .pd-hero');if(h&&!h.dataset.own)h.style.backgroundImage='url("'+u+'")'}
  m=k.match(/^sport_(\w+)$/);if(m){var d=document.querySelector('[data-page="sa-'+m[1]+'"] .sa-detail .ptitle');if(d&&!d.nextElementSibling.classList.contains('sa-pic')){var im=document.createElement('img');im.className='sa-pic';im.alt=k;im.src=u;d.parentNode.insertBefore(im,d.nextSibling)}}})}
 function banner(rows){if(!rows||!rows.length)return;var u=rows.filter(function(r){return String(r.show||'TRUE').toUpperCase()!='FALSE'&&r.image_url}).map(function(r){return r.image_url});if(window.AIHS_banner)window.AIHS_banner(u)}
-get('Banner').then(banner);get('Images').then(slots);get('Uniforms').then(function(r){if(r&&window.AIHS_uniforms)window.AIHS_uniforms(r)});get('Sports').then(sports);get('Council').then(council);get('Ticker').then(ticker);get('News').then(news);get('Calendar').then(cal);get('RosterPublic').then(roster);
+get('Banner').then(banner);get('Images').then(slots);get('Uniforms').then(function(r){if(r&&window.AIHS_uniforms)window.AIHS_uniforms(r)});get('Sports').then(sports);get('Council').then(council);get('Ticker').then(ticker);get('News').then(news);get('Calendar').then(cal);get('RosterPublic').then(function(r){if(window.__rs)window.__rs(r)});
 })();
 </script>
 <script>
